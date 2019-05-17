@@ -1,0 +1,87 @@
+#lang planet dyoo/simply-scheme:2
+
+;;PART I: CALCULATOR
+;;multiplication procedure
+(define (*-helper a b)
+  (cond ((= b 0) 0)
+        ((= b 1) a)
+        ((+ a (*-helper a (- b 1)))))
+  )
+
+;(*-helper 3 4)
+
+
+;;exponentiation procedure
+;;(^ 3 4) = * 3 3 3 3
+
+(define (^-helper a b)
+  (cond ((= b 0) 1)
+        ((= b 1) a)
+        ((*-helper a (^-helper a (- b 1))))))  ;;a missing bracket before the tail recursive procedure causes *-helper a to be a condition that evaluates to true?
+
+;(^-helper 3 3)
+
+
+;; division procedure
+;;iterated subtraction
+;;(\9 2) = (- 9 2 2 2 2 remainder 1)
+
+(define (/-helper a b)
+  (division-procedure a b 0))
+
+(define (division-procedure a b counter)
+  (if (< a b)
+      (se counter a)
+      (division-procedure (- a b) b (+ counter 1)))) """comments: can you do a recursive process instead?"""
+                  
+;(/-helper 16 3)
+
+
+;; fast multiplication: karatsuba algorithm
+"""
+x = 12456898
+y = 56789876
+"""
+
+(define (middle-index number)
+    (- (first (/-helper (count number) 2)) 1))
+
+(define (first-half number)
+  (first-iter number (middle-index number)))
+
+(define (first-iter number counter)
+  (if (= counter 0)
+      (first number)
+      (se (first number) (first-iter (butfirst number) (- counter 1)))))
+
+""" can come back later to re-attempt implementation of karatsuba algorithm"""
+
+;; PART II: RECURSION
+;; squares procedures
+
+(* (first '(2 3 4)) (first '(2 3 4)))
+
+(first '(5))
+
+(se '(2 3 4) '())
+
+(se (* 5 6) (* 3 6))
+
+
+(define (squares list)
+  (cond ((= (count list) 1)
+        (*(first list) (first list)))
+        ((se (* (first list) (first list)) (squares (butfirst list))))))
+
+(trace squares)
+
+(squares '(2 3 4 5))
+
+(= (count '(1)) 1)
+
+;;switch procedure: takes a sentence as an argument and returns a sentence with every instance of I or me replaced by you, and every instance of you replaced by me except at the beginning of the sentence, where it is replaced by I.
+
+(define (switch sentence)
+  (cond (< (count sentence) 1)
+        ('())
+        (> (count sentence) 0)
